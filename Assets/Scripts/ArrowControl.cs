@@ -5,23 +5,24 @@ using UnityEngine;
 public class ArrowControl : MonoBehaviour
 {
     [Range(1, 1000)]
-    [SerializeField] int _arrowCount;
+    [SerializeField]
+    private int _arrowCount;
 
-    [SerializeField] GameObject _arrowPrefab;
+    [SerializeField]
+    private GameObject _arrowPrefab;
 
-    List<GameObject> _arrows;
-    float _offset = 0.25f;
-    int _ring = 0;
-    float _angle = 0;
+    private List<GameObject> _arrows;
+    private float _offset = 0.25f;
+    private int _ring = 0;
+    private float _angle = 0;
 
-    void Awake()
+    private void Awake()
     {
         _arrows = new List<GameObject>();
         CreatArrows();
-
     }
 
-    public void CreatArrows()
+    private void CreatArrows()
     {
         for (int i = 0; i < _arrowCount && i <= 340; i++)
         {
@@ -31,30 +32,7 @@ public class ArrowControl : MonoBehaviour
         }
     }
 
-    public void OrderArrows2()
-    {
-        // Value influences distance between the spiral arms, usually kept 3.5 to 10+
-        float angle = 0;
-        float r;
-
-        for (int i = 1; i < _arrowCount; i++)   // spirallength determines pointdist spaced points to plot
-        {
-            r = Mathf.Sqrt(i);//.Log10(i);
-            angle += Mathf.Asin(1 / r);
-            float x = Mathf.Cos(angle) * r * _offset;
-            float y = Mathf.Sin(angle) * r * _offset;
-            _arrows[i].transform.position = new Vector3(x, y, transform.position.z);
-        }
-
-    }
-
-    public void OrderArrows(int i)
-    {
-
-
-    }
-
-    Vector3 GetPosition(int index)
+    private Vector3 GetPosition(int index)
     {
         if (index == 0) return Vector3.zero;
 
