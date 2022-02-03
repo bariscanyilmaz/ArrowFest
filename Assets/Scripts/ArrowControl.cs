@@ -15,11 +15,38 @@ public class ArrowControl : MonoBehaviour
     private float _offset = 0.25f;
     private int _ring = 0;
     private float _angle = 0;
+    private Rigidbody _rb;
+    private bool _isPressing;
 
+    private Vector3 _firstPosition;
+    private Camera _cam;
     private void Awake()
     {
         _arrows = new List<GameObject>();
+        _rb = GetComponent<Rigidbody>();
+        _cam = Camera.main;
         CreatArrows();
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            _isPressing = true;
+            _firstPosition = GetMousePosition();
+        }
+
+        if (Input.GetButtonUp("Fire1"))
+        {
+            _isPressing = false;
+        }
+
+        if (_isPressing)
+        {
+            Vector3 pos = GetMousePosition();
+            _rb.position = new Vector3(pos.x - _firstPosition.x, transform.position.y, transform.position.z);
+
+        }
     }
 
     private void CreatArrows()
@@ -75,6 +102,8 @@ public class ArrowControl : MonoBehaviour
 
 
     }
+
+    Vector3 GetMousePosition() => _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
 
 
 
