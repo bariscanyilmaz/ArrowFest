@@ -1,9 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class ArrowControl : MonoBehaviour
 {
+    //CONSTANTS
+    private const int maxArrowCount = 340;
+
+
+    [SerializeField]
+    private float _maxWidth;
+
     [Range(1, 1000)]
     [SerializeField]
     private int _arrowCount;
@@ -11,24 +18,40 @@ public class ArrowControl : MonoBehaviour
     [SerializeField]
     private GameObject _arrowPrefab;
 
+    [SerializeField]
+    private TMP_Text _arrowCountText;
+
+    [SerializeField]
+    private float _swipeSpeed;
+    //buffer
     private List<GameObject> _arrows;
+
     private float _offset = 0.25f;
     private int _ring = 0;
+    private int _activeRing = 0;
     private float _angle = 0;
     private Rigidbody _rb;
     private bool _isPressing;
 
     private Vector3 _firstPosition, _lastPosition;
     private Camera _cam;
-
     private float _axisX;
+    private CapsuleCollider _collider;
+
     private void Awake()
     {
+
         _arrows = new List<GameObject>();
         _rb = GetComponent<Rigidbody>();
+        _collider = GetComponent<CapsuleCollider>();
         _cam = Camera.main;
-        CreatArrows();
+        CreateArrows();//Create arrow buffer
+        ShowArrows();
+        SetColliderRadius();
+        _arrowCountText.text = (_arrowCount).ToString();
     }
+
+    //TODO Better Swipe Control
 
     private void Update()
     {
@@ -47,19 +70,54 @@ public class ArrowControl : MonoBehaviour
         if (_isPressing)
         {
             _lastPosition = GetMousePosition();
-            _axisX = Mathf.Clamp(_lastPosition.x - _firstPosition.x, -3.5f, 3.5f);
-            _rb.position = new Vector3(_axisX, transform.position.y, transform.position.z);
-        }
+            _axisX = (_firstPosition.x - _lastPosition.x)*Time.deltaTime*_swipeSpeed;
+            Vector3 pos = new Vector3(Mathf.Clamp(_rb.position.x + _axisX, -_maxWidth, _maxWidth), transform.position.y, transform.position.z);
+            _rb.position = pos;
 
+        }
+    }
+
+    private void SetColliderRadius()
+    {
+        if (_arrowCount > 1)
+        {
+            _collider.radius = _activeRing * _offset;
+        }
 
     }
 
-    private void CreatArrows()
+
+    [ContextMenu("Create")]
+    public void Create()
     {
-        for (int i = 0; i < _arrowCount && i <= 340; i++)
+        if (_arrows.Count == 0) CreateArrows();
+
+        HideAllArrows();
+        ShowArrows();
+    }
+
+    public void ShowArrows()
+    {
+        for (int i = 0; i < _arrowCount && i < maxArrowCount; i++)
+        {
+            _arrows[i].SetActive(true);
+        }
+    }
+
+    public void HideAllArrows()
+    {
+        foreach (var item in _arrows)
+        {
+            item.SetActive(false);
+        }
+    }
+    public void CreateArrows()
+    {
+        for (int i = 0; i <= maxArrowCount; i++)
         {
             var arrow = Instantiate(_arrowPrefab, GetPosition(i), Quaternion.identity);
             arrow.transform.SetParent(transform);
+            arrow.SetActive(false);
             _arrows.Add(arrow);
         }
     }
@@ -72,7 +130,6 @@ public class ArrowControl : MonoBehaviour
         {//10
             _ring = 1;
             _angle += 36;
-
         }
         else if (index <= 30)
         {//20
@@ -100,11 +157,13 @@ public class ArrowControl : MonoBehaviour
             _angle += 3f;
         }
 
+        _activeRing = index <= _arrowCount ? _ring : _activeRing;
+
         float x = Mathf.Cos((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
         float y = Mathf.Sin((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
 
         return new Vector3(x, y, transform.position.z);
     }
 
-    Vector3 GetMousePosition() => _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
+    Vector3 GetMousePosition() => _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
 }
