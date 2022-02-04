@@ -221,6 +221,12 @@ public class ArrowControl : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
+
+            if (_arrowCount > 3)
+            {
+                var enemy = other.GetComponent<Enemy>();
+                enemy.Die();
+            }
             //check arrow count
             //
             //decrease arrow
