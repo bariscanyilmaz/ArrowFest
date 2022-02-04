@@ -70,7 +70,7 @@ public class ArrowControl : MonoBehaviour
         if (_isPressing)
         {
             _lastPosition = GetMousePosition();
-            _axisX = (_firstPosition.x - _lastPosition.x)*Time.deltaTime*_swipeSpeed;
+            _axisX = (_firstPosition.x - _lastPosition.x) * Time.deltaTime * _swipeSpeed;
             Vector3 pos = new Vector3(Mathf.Clamp(_rb.position.x + _axisX, -_maxWidth, _maxWidth), transform.position.y, transform.position.z);
             _rb.position = pos;
 
