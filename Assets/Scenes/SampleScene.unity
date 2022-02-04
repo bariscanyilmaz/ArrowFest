@@ -265,10 +265,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxWidth: 3.5
-  _arrowCount: 360
+  _arrowCount: 1
   _arrowPrefab: {fileID: 4448966348673000567, guid: 2bcb8f0e422543949af6f2e7e4fa4e91, type: 3}
   _arrowCountText: {fileID: 1215265957}
-  _swipeSpeed: 7
+  _swipeSpeed: 10
 --- !u!136 &552418579
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -813,13 +813,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 374264330, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _value
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3546864956565907968, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
       propertyPath: m_Name
       value: Decreasing Wall
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546864956565907968, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3546864956565907971, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
       propertyPath: m_RootOrder
@@ -874,6 +874,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 237725686, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
+      propertyPath: _value
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6874319796452229204, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -921,10 +925,6 @@ PrefabInstance:
     - target: {fileID: 6874319796452229207, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
       propertyPath: m_Name
       value: IncreasingWall
-      objectReference: {fileID: 0}
-    - target: {fileID: 6874319796452229207, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
