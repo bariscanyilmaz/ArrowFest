@@ -104,6 +104,23 @@ public class ArrowControl : MonoBehaviour
         }
     }
 
+    public void ShowArrows(int arrowCount, int newArrowCount)
+    {
+        for (int i = arrowCount; i < newArrowCount && i < maxArrowCount; i++)
+        {
+            _arrows[i].SetActive(true);
+        }
+
+    }
+
+    private void HideArrows(int arrowCount, int newArrowCount)
+    {
+        for (int i = arrowCount; i > newArrowCount; i--)
+        {
+            _arrows[i].SetActive(false);
+        }
+    }
+
     public void HideAllArrows()
     {
         foreach (var item in _arrows)
@@ -166,4 +183,52 @@ public class ArrowControl : MonoBehaviour
     }
 
     Vector3 GetMousePosition() => _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
+
+    public static int Calculate(int val, int arrows, Operator op)
+    {
+        return op switch
+        {
+            Operator.Sum => arrows + val,
+            Operator.Mul => arrows * val,
+            Operator.Sub => arrows - val,
+            Operator.Div => arrows / val,
+            _ => arrows,
+        };
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Wall"))
+        {
+            var wall = other.gameObject.GetComponent<Wall>();
+
+            int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
+            ChangeArrowCount(newArrowCount);
+
+        }
+        else if (other.gameObject.CompareTag("Obstacle"))
+        {
+
+        }
+    }
+
+    private void ChangeArrowCount(int newValue)
+    {
+        if (newValue > _arrowCount)
+        {
+            ShowArrows(_arrowCount, newValue);
+        }
+        else
+        {
+            HideArrows(_arrowCount, newValue);
+        }
+
+        _arrowCount = newValue;
+    }
+
+    private void UpdateArrowCountText()
+    {
+        _arrowCountText.text = (_arrowCount).ToString();
+    }
+
 }
