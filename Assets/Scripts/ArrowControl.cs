@@ -215,6 +215,7 @@ public class ArrowControl : MonoBehaviour
                 wall.gameObject.SetActive(false);
                 int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
                 ChangeArrowCount(newArrowCount);
+                Invoke("ResetWallHasCollided", 1f);
             }
         }
         else if (other.gameObject.CompareTag("Obstacle"))
@@ -224,12 +225,9 @@ public class ArrowControl : MonoBehaviour
 
     }
 
-    void LateUpdate()
+    private void ResetWallHasCollided()
     {
-        if (wallHasCollided)
-        {
-            wallHasCollided = false;
-        }
+        wallHasCollided = false;
     }
 
     private void ChangeArrowCount(int newValue)
