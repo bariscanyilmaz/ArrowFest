@@ -219,11 +219,15 @@ public class ArrowControl : MonoBehaviour
                 UpdateArrowCountText();
             }
         }
-        else if (other.gameObject.CompareTag("Obstacle"))
+        else if (other.gameObject.CompareTag("Enemy"))
         {
-
+            //check arrow count
+            //
+            //decrease arrow
+            //
+            //set die animation
+            //
         }
-
     }
 
     private void ResetWallHasCollided()
