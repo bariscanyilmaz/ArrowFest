@@ -37,6 +37,16 @@ public class Wall : MonoBehaviour
             _ => string.Empty
         };
     }
+
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.gameObject.CompareTag("Player"))
+    //     {
+    //         var arrow = other.gameObject.GetComponent<ArrowControl>();
+
+    //         int newArrowCount = arrow.Calculate(_value, arrow.ArrowCount, _operator);
+    //         arrow.Proceed(newArrowCount);
+    //         Debug.Log(newArrowCount);
+    //     }
+    // }
 }
-
-

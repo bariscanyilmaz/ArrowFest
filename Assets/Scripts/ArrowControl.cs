@@ -22,7 +22,7 @@ public class ArrowControl : MonoBehaviour
     private TMP_Text _arrowCountText;
 
     [SerializeField]
-    private float _swipeSpeed;
+    private float _swipeSpeed, _moveSpeed;
     //buffer
     private List<GameObject> _arrows;
 
@@ -30,7 +30,6 @@ public class ArrowControl : MonoBehaviour
     private int _ring = 0;
     private int _activeRing = 0;
     private float _angle = 0;
-    private Rigidbody _rb;
     private bool _isPressing;
 
     private Vector3 _firstPosition, _lastPosition;
@@ -38,11 +37,12 @@ public class ArrowControl : MonoBehaviour
     private float _axisX;
     private CapsuleCollider _collider;
 
+    public int ArrowCount => _arrowCount;
+
     private void Awake()
     {
 
         _arrows = new List<GameObject>();
-        _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
         _cam = Camera.main;
         CreateArrows();//Create arrow buffer
@@ -51,30 +51,36 @@ public class ArrowControl : MonoBehaviour
         _arrowCountText.text = (_arrowCount).ToString();
     }
 
-    //TODO Better Swipe Control
 
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetMouseButtonDown(0))
         {
             _firstPosition = GetMousePosition();
             _isPressing = true;
         }
-
-        if (Input.GetButtonUp("Fire1"))
-        {
-            _isPressing = false;
-
-        }
-
-        if (_isPressing)
+        else if (Input.GetMouseButton(0))
         {
             _lastPosition = GetMousePosition();
-            _axisX = (_firstPosition.x - _lastPosition.x) * Time.deltaTime * _swipeSpeed;
-            Vector3 pos = new Vector3(Mathf.Clamp(_rb.position.x + _axisX, -_maxWidth, _maxWidth), transform.position.y, transform.position.z);
-            _rb.position = pos;
-
+            _axisX = _lastPosition.x - _firstPosition.x;
         }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _axisX = 0;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        float amount = Time.deltaTime * _swipeSpeed * _axisX;
+
+        var pos = transform.localPosition;
+        pos.x += amount;
+
+        pos.x = Mathf.Clamp(pos.x, -_maxWidth, _maxWidth);
+        transform.localPosition = pos;
+
+        transform.position += Vector3.forward * Time.deltaTime * _moveSpeed;
     }
 
     private void SetColliderRadius()
@@ -86,8 +92,6 @@ public class ArrowControl : MonoBehaviour
 
     }
 
-
-    [ContextMenu("Create")]
     public void Create()
     {
         if (_arrows.Count == 0) CreateArrows();
@@ -182,9 +186,9 @@ public class ArrowControl : MonoBehaviour
         return new Vector3(x, y, transform.position.z);
     }
 
-    Vector3 GetMousePosition() => _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
+    Vector3 GetMousePosition() => _cam.ScreenToViewportPoint(Input.mousePosition);
 
-    public static int Calculate(int val, int arrows, Operator op)
+    public int Calculate(int val, int arrows, Operator op)
     {
         return op switch
         {
@@ -195,20 +199,36 @@ public class ArrowControl : MonoBehaviour
             _ => arrows,
         };
     }
-
+    public void Proceed(int newArrowCount)
+    {
+        ChangeArrowCount(newArrowCount);
+    }
+    private bool wallHasCollided = false;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Wall"))
         {
-            var wall = other.gameObject.GetComponent<Wall>();
-
-            int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
-            ChangeArrowCount(newArrowCount);
-
+            if (!wallHasCollided)
+            {
+                wallHasCollided = true;
+                var wall = other.gameObject.GetComponent<Wall>();
+                wall.gameObject.SetActive(false);
+                int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
+                ChangeArrowCount(newArrowCount);
+            }
         }
         else if (other.gameObject.CompareTag("Obstacle"))
         {
 
+        }
+
+    }
+
+    void LateUpdate()
+    {
+        if (wallHasCollided)
+        {
+            wallHasCollided = false;
         }
     }
 
