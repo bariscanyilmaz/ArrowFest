@@ -71,10 +71,14 @@ public class ArrowControl : MonoBehaviour
 
     private void HideArrows(int arrowCount, int newArrowCount)
     {
-        for (int i = arrowCount; i > newArrowCount; i--)
+        if (newArrowCount < maxArrowCount)
         {
-            _arrows[i].SetActive(false);
+            for (int i = arrowCount > maxArrowCount ? maxArrowCount - 1 : arrowCount; i >= newArrowCount; i--)
+            {
+                _arrows[i].SetActive(false);
+            }
         }
+
     }
 
     public void HideAllArrows()
@@ -138,7 +142,7 @@ public class ArrowControl : MonoBehaviour
         return new Vector3(x, y, transform.position.z);
     }
 
-   
+
 
     public int Calculate(int val, int arrows, Operator op)
     {
