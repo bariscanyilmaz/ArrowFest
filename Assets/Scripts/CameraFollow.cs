@@ -7,12 +7,16 @@ public class CameraFollow : MonoBehaviour
     [SerializeField]
     Transform _target;
     float _smoothSpeed = 2f;
-    float _offset = 20;
+    Vector3 _offset;
     Vector3 _smoothedPosition;
 
-    void Update()
+    void Start()
     {
-        transform.position = new Vector3(0, transform.position.y, transform.position.z);
+        _offset = _target.position - transform.position;
+    }
 
+    void LateUpdate()
+    {
+        transform.position = Vector3.Lerp(transform.position, _target.position - _offset, Time.deltaTime * _smoothSpeed);
     }
 }
