@@ -62,11 +62,13 @@ public class ArrowControl : MonoBehaviour
 
     public void ShowArrows(int arrowCount, int newArrowCount)
     {
-        for (int i = arrowCount; i < newArrowCount && i < maxArrowCount; i++)
+        if (newArrowCount < maxArrowCount)
         {
-            _arrows[i].SetActive(true);
+            for (int i = arrowCount; i < newArrowCount && i < maxArrowCount; i++)
+            {
+                _arrows[i].SetActive(true);
+            }
         }
-
     }
 
     private void HideArrows(int arrowCount, int newArrowCount)
