@@ -7,8 +7,9 @@ public class ArrowControl : MonoBehaviour
     //CONSTANTS
     private const int maxArrowCount = 340;
     private const int baseArrowCount=1;
-
-
+    private const float xOffset=0.25f;
+    private const float yOffset=0.25f;
+    
     [Range(1, 1000)]
     [SerializeField]
     private int _arrowCount;
@@ -26,6 +27,7 @@ public class ArrowControl : MonoBehaviour
     private int _ring = 0;
     private int _activeRing = 0;
     private float _angle = 0;
+
     private CapsuleCollider _collider;
     public int ArrowCount => _arrowCount;
 
