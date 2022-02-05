@@ -4,12 +4,25 @@ using UnityEngine;
 using TMPro;
 public class ArrowControl : MonoBehaviour
 {
-    //CONSTANTS
-    private const int maxArrowCount = 340;
-    private const int baseArrowCount=1;
-    private const float xOffset=0.25f;
-    private const float yOffset=0.25f;
-    
+    private const float DEFAULT_COLLIDER_RADIUS = 0.07f;
+    private const float DEFAULT_OFFSET = 0.25f;
+    private const int MAX_ARROW_COUNT = 311;
+    private const int BASE_ARROW_COUNT = 1;
+    private float xOffset = DEFAULT_OFFSET;
+    private float yOffset = DEFAULT_OFFSET;
+
+    private float _currentXradius = 0.25f;
+    private float _currentYradius = 0.25f;
+    //
+    private int _ringCapacity = 10;
+    private int _ring = 1;
+    private float _angle = 0;
+    private float _deltaAngle = 0;
+    //
+    private int _currentRing = 1;
+    private int _currentArrowCount = 0;
+
+
     [Range(1, 1000)]
     [SerializeField]
     private int _arrowCount;
@@ -24,9 +37,7 @@ public class ArrowControl : MonoBehaviour
 
     private List<GameObject> _arrows;
     private float _offset = 0.25f;
-    private int _ring = 0;
     private int _activeRing = 0;
-    private float _angle = 0;
 
     private CapsuleCollider _collider;
     public int ArrowCount => _arrowCount;
@@ -45,16 +56,35 @@ public class ArrowControl : MonoBehaviour
 
     private void SetColliderRadius()
     {
+
         if (_arrowCount > 1)
         {
-            _collider.radius = _activeRing * _offset;
+            _collider.radius = GetRing() * _offset;
+        }
+        else
+        {
+            _collider.radius = DEFAULT_COLLIDER_RADIUS;
         }
 
     }
 
+    private int GetRing()
+    {
+        int currentCount = 10;
+        int count = 10;
+        int ring = 1;
+        while (_arrowCount > currentCount && _arrowCount < MAX_ARROW_COUNT)
+        {
+            count *= 2;
+            currentCount+=count;
+            ring++;
+        }
+        return ring;
+    }
+
     public void ShowArrows()
     {
-        for (int i = 0; i < _arrowCount && i < maxArrowCount; i++)
+        for (int i = 0; i < _arrowCount && i < MAX_ARROW_COUNT; i++)
         {
             _arrows[i].SetActive(true);
         }
@@ -62,9 +92,9 @@ public class ArrowControl : MonoBehaviour
 
     public void ShowArrows(int arrowCount, int newArrowCount)
     {
-        if (newArrowCount < maxArrowCount)
+        if (newArrowCount < MAX_ARROW_COUNT)
         {
-            for (int i = arrowCount; i < newArrowCount && i < maxArrowCount; i++)
+            for (int i = arrowCount; i < newArrowCount && i < MAX_ARROW_COUNT; i++)
             {
                 _arrows[i].SetActive(true);
             }
@@ -73,9 +103,9 @@ public class ArrowControl : MonoBehaviour
 
     private void HideArrows(int arrowCount, int newArrowCount)
     {
-        if (newArrowCount < maxArrowCount)
+        if (newArrowCount < MAX_ARROW_COUNT)
         {
-            for (int i = arrowCount > maxArrowCount ? maxArrowCount - 1 : arrowCount; i >= newArrowCount; i--)
+            for (int i = arrowCount > MAX_ARROW_COUNT ? MAX_ARROW_COUNT - 1 : arrowCount; i >= newArrowCount; i--)
             {
                 _arrows[i].SetActive(false);
             }
@@ -91,14 +121,40 @@ public class ArrowControl : MonoBehaviour
     }
     public void CreateArrows()
     {
-        for (int i = 0; i <= maxArrowCount; i++)
+        for (int i = 0; i <= MAX_ARROW_COUNT; i++)
         {
+
             var arrow = Instantiate(_arrowPrefab, Vector3.zero, Quaternion.identity);
+
             arrow.transform.SetParent(_arrowPoint);
-            arrow.transform.localPosition = GetPosition(i);
+
+            arrow.transform.localPosition = GetArrowPosition(i);
+
             arrow.SetActive(false);
+
             _arrows.Add(arrow);
         }
+    }
+
+    Vector3 GetArrowPosition(int i)
+    {
+        if (i == 0) return Vector3.zero;
+
+        _currentArrowCount++;
+        if (_currentArrowCount > _ringCapacity)
+        {
+            _ring++;
+            _currentRing = _ring;
+            _ringCapacity *= 2;
+            _currentArrowCount = 0;
+        }
+
+        float angle = ((float)_currentArrowCount / (float)_ringCapacity) * 360f;
+
+        float x = Mathf.Cos(Mathf.Deg2Rad * angle) * _ring * xOffset;
+        float y = Mathf.Sin(Mathf.Deg2Rad * angle) * _ring * xOffset;
+
+        return new Vector3(x, y, 0);
     }
 
     private Vector3 GetPosition(int index)
@@ -160,6 +216,7 @@ public class ArrowControl : MonoBehaviour
     public void Proceed(int newArrowCount)
     {
         ChangeArrowCount(newArrowCount);
+        SetColliderRadius();
     }
     private bool wallHasCollided = false;
     private void OnTriggerEnter(Collider other)
@@ -180,8 +237,10 @@ public class ArrowControl : MonoBehaviour
                 else
                 {
                     ChangeArrowCount(newArrowCount);
+                    SetColliderRadius();
                     Invoke("ResetWallHasCollided", 1f);
                     UpdateArrowCountText();
+
                 }
 
             }
@@ -194,6 +253,7 @@ public class ArrowControl : MonoBehaviour
                 var enemy = other.GetComponent<Enemy>();
                 enemy.Die();
                 ChangeArrowCount(_arrowCount - 3);
+                SetColliderRadius();
                 UpdateArrowCountText();
             }
         }
@@ -227,7 +287,7 @@ public class ArrowControl : MonoBehaviour
     {
         HideAllArrows();
         _arrows[0].SetActive(true);
-        _arrowCount=1;
+        _arrowCount = 1;
         UpdateArrowCountText();
         ResetWallHasCollided();
 
