@@ -16,6 +16,8 @@ public class ArrowControl : MonoBehaviour
 
     [SerializeField]
     private TMP_Text _arrowCountText;
+    [SerializeField]
+    private Transform _arrowPoint;
 
     private List<GameObject> _arrows;
     private float _offset = 0.25f;
@@ -33,6 +35,7 @@ public class ArrowControl : MonoBehaviour
         ShowArrows();
         SetColliderRadius();
         _arrowCountText.text = (_arrowCount).ToString();
+        transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
     }
 
     private void SetColliderRadius()
@@ -42,14 +45,6 @@ public class ArrowControl : MonoBehaviour
             _collider.radius = _activeRing * _offset;
         }
 
-    }
-
-    public void Create()
-    {
-        if (_arrows.Count == 0) CreateArrows();
-
-        HideAllArrows();
-        ShowArrows();
     }
 
     public void ShowArrows()
@@ -80,7 +75,6 @@ public class ArrowControl : MonoBehaviour
                 _arrows[i].SetActive(false);
             }
         }
-
     }
 
     public void HideAllArrows()
@@ -94,8 +88,9 @@ public class ArrowControl : MonoBehaviour
     {
         for (int i = 0; i <= maxArrowCount; i++)
         {
-            var arrow = Instantiate(_arrowPrefab, GetPosition(i), Quaternion.identity);
-            arrow.transform.SetParent(transform);
+            var arrow = Instantiate(_arrowPrefab, Vector3.zero, Quaternion.identity);
+            arrow.transform.SetParent(_arrowPoint);
+            arrow.transform.localPosition = GetPosition(i);
             arrow.SetActive(false);
             _arrows.Add(arrow);
         }
@@ -184,13 +179,9 @@ public class ArrowControl : MonoBehaviour
             {
                 var enemy = other.GetComponent<Enemy>();
                 enemy.Die();
+                ChangeArrowCount(_arrowCount - 3);
+                UpdateArrowCountText();
             }
-            //check arrow count
-            //
-            //decrease arrow
-            //
-            //set die animation
-            //
         }
     }
 
