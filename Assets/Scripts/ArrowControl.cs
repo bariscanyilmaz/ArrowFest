@@ -7,10 +7,6 @@ public class ArrowControl : MonoBehaviour
     //CONSTANTS
     private const int maxArrowCount = 340;
 
-
-    [SerializeField]
-    private float _maxWidth;
-
     [Range(1, 1000)]
     [SerializeField]
     private int _arrowCount;
@@ -21,66 +17,22 @@ public class ArrowControl : MonoBehaviour
     [SerializeField]
     private TMP_Text _arrowCountText;
 
-    [SerializeField]
-    private float _swipeSpeed, _moveSpeed;
-    //buffer
     private List<GameObject> _arrows;
-
     private float _offset = 0.25f;
     private int _ring = 0;
     private int _activeRing = 0;
     private float _angle = 0;
-    private bool _isPressing;
-
-    private Vector3 _firstPosition, _lastPosition;
-    private Camera _cam;
-    private float _axisX;
     private CapsuleCollider _collider;
-
     public int ArrowCount => _arrowCount;
-
     private void Awake()
     {
 
         _arrows = new List<GameObject>();
         _collider = GetComponent<CapsuleCollider>();
-        _cam = Camera.main;
         CreateArrows();//Create arrow buffer
         ShowArrows();
         SetColliderRadius();
         _arrowCountText.text = (_arrowCount).ToString();
-    }
-
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _firstPosition = GetMousePosition();
-            _isPressing = true;
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            _lastPosition = GetMousePosition();
-            _axisX = _lastPosition.x - _firstPosition.x;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _axisX = 0;
-        }
-    }
-
-    void FixedUpdate()
-    {
-        float amount = Time.deltaTime * _swipeSpeed * _axisX;
-
-        var pos = transform.localPosition;
-        pos.x += amount;
-
-        pos.x = Mathf.Clamp(pos.x, -_maxWidth, _maxWidth);
-        transform.localPosition = pos;
-
-        transform.position += Vector3.forward * Time.deltaTime * _moveSpeed;
     }
 
     private void SetColliderRadius()
@@ -186,7 +138,7 @@ public class ArrowControl : MonoBehaviour
         return new Vector3(x, y, transform.position.z);
     }
 
-    Vector3 GetMousePosition() => _cam.ScreenToViewportPoint(Input.mousePosition);
+   
 
     public int Calculate(int val, int arrows, Operator op)
     {
