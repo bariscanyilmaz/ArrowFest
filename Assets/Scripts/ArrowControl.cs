@@ -6,6 +6,8 @@ public class ArrowControl : MonoBehaviour
 {
     //CONSTANTS
     private const int maxArrowCount = 340;
+    private const int baseArrowCount=1;
+
 
     [Range(1, 1000)]
     [SerializeField]
@@ -26,17 +28,18 @@ public class ArrowControl : MonoBehaviour
     private float _angle = 0;
     private CapsuleCollider _collider;
     public int ArrowCount => _arrowCount;
-    private void Awake()
-    {
 
+    public void OnGameStart()
+    {
         _arrows = new List<GameObject>();
         _collider = GetComponent<CapsuleCollider>();
         CreateArrows();//Create arrow buffer
         ShowArrows();
         SetColliderRadius();
-        _arrowCountText.text = (_arrowCount).ToString();
-        transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
+        UpdateArrowCountText();
+        //transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
     }
+
 
     private void SetColliderRadius()
     {
@@ -136,7 +139,7 @@ public class ArrowControl : MonoBehaviour
         float x = Mathf.Cos((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
         float y = Mathf.Sin((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
 
-        return new Vector3(x, y, transform.position.z);
+        return new Vector3(x, y, 0);
     }
 
 
@@ -167,9 +170,18 @@ public class ArrowControl : MonoBehaviour
                 var wall = other.gameObject.GetComponent<Wall>();
                 wall.gameObject.SetActive(false);
                 int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
-                ChangeArrowCount(newArrowCount);
-                Invoke("ResetWallHasCollided", 1f);
-                UpdateArrowCountText();
+                if (newArrowCount < 1)
+                {
+                    //GameOver
+                    GameManager.Instance.GameOver.Invoke();
+                }
+                else
+                {
+                    ChangeArrowCount(newArrowCount);
+                    Invoke("ResetWallHasCollided", 1f);
+                    UpdateArrowCountText();
+                }
+
             }
         }
         else if (other.gameObject.CompareTag("Enemy"))
@@ -207,6 +219,16 @@ public class ArrowControl : MonoBehaviour
     private void UpdateArrowCountText()
     {
         _arrowCountText.text = (_arrowCount).ToString();
+    }
+
+    public void OnGameReStart()
+    {
+        HideAllArrows();
+        _arrows[0].SetActive(true);
+        _arrowCount=1;
+        UpdateArrowCountText();
+        ResetWallHasCollided();
+
     }
 
 }

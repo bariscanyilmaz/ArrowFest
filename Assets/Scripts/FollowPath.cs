@@ -20,21 +20,41 @@ public class FollowPath : MonoBehaviour
 
     private float _distanceTravelled;
 
+    public void SetPathCreator(PathCreator creator)
+    {
+        _pathCreator = creator;
+    }
     void Update()
     {
-        if (_pathCreator != null)
+        if (GameManager.Instance.GameState == GameState.Play)
         {
-            _distanceTravelled += _speed * Time.deltaTime;
-            var pos = _pathCreator.path.GetPointAtDistance(_distanceTravelled, _endOfPathInstruction);
-            transform.position = new Vector3(pos.x, transform.position.y, pos.z);
-            var rot = _pathCreator.path.GetRotationAtDistance(_distanceTravelled, _endOfPathInstruction);
-            transform.eulerAngles = new Vector3(rot.eulerAngles.x, rot.eulerAngles.y, 0);
-
-            if (transform.position == _pathCreator.path.GetPoint(_pathCreator.path.NumPoints - 1))
+            if (_pathCreator != null)
             {
-                _endOfPath.Invoke();
-            }
+                _distanceTravelled += _speed * Time.deltaTime;
+                var pos = _pathCreator.path.GetPointAtDistance(_distanceTravelled, _endOfPathInstruction);
+                transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+                var rot = _pathCreator.path.GetRotationAtDistance(_distanceTravelled, _endOfPathInstruction);
+                transform.eulerAngles = new Vector3(rot.eulerAngles.x, rot.eulerAngles.y, 0);
 
+                if (transform.position == _pathCreator.path.GetPoint(_pathCreator.path.NumPoints - 1))
+                {
+                    _endOfPath.Invoke();
+                }
+
+            }
         }
+
+    }
+
+    public void OnGameRestart()
+    {
+        _distanceTravelled = 0;
+        var pos = _pathCreator.path.GetPointAtDistance(_distanceTravelled, _endOfPathInstruction);
+        transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+        var rot = _pathCreator.path.GetRotationAtDistance(_distanceTravelled, _endOfPathInstruction);
+        transform.eulerAngles = new Vector3(rot.eulerAngles.x, rot.eulerAngles.y, 0);
+
+        _pathCreator = GameManager.Instance.GetLevel().GetPathCreator();
+        _pathCreator.TriggerPathUpdate();
     }
 }

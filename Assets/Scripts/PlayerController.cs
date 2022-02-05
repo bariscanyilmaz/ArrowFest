@@ -26,33 +26,38 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.Instance.GameState == GameState.Play)
         {
-            _firstPosition = GetMousePosition();
-            _isPressing = true;
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                _firstPosition = GetMousePosition();
+                _isPressing = true;
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                _lastPosition = GetMousePosition();
+                _axisX = _lastPosition.x - _firstPosition.x;
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                _axisX = 0;
+                _lastPosition = _firstPosition;
+            }
+
+
+            float amount = Time.deltaTime * _swipeSpeed * _axisX;
+
+            var pos = _arrowController.localPosition;
+            pos.x += amount;
+
+            pos.x = Mathf.Clamp(pos.x, -_maxWidth, _maxWidth);
+            _arrowController.localPosition = pos;
         }
-        else if (Input.GetMouseButton(0))
-        {
-            _lastPosition = GetMousePosition();
-            _axisX = _lastPosition.x - _firstPosition.x;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _axisX = 0;
-            _lastPosition = _firstPosition;
-        }
-
-
-        float amount = Time.deltaTime * _swipeSpeed * _axisX;
-
-        var pos = _arrowController.localPosition;
-        pos.x += amount;
-
-        pos.x = Mathf.Clamp(pos.x, -_maxWidth, _maxWidth);
-        _arrowController.localPosition = pos;
     }
 
     Vector3 GetMousePosition() => _cam.ScreenToViewportPoint(Input.mousePosition);
 
-    public void EndOfPath()=>Debug.Log("Done");
+    public void EndOfPath() => GameManager.Instance.SetState(GameState.FinishLine);
 }
