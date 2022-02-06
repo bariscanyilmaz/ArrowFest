@@ -26,7 +26,7 @@ public class FollowPath : MonoBehaviour
     }
     void Update()
     {
-        if (GameManager.Instance.GameState == GameState.Play)
+        if (GameManager.Instance.GameState == GameState.Play ||GameManager.Instance.GameState == GameState.FinishLine )
         {
             if (_pathCreator != null)
             {

@@ -4,10 +4,12 @@ using UnityEngine;
 using TMPro;
 public class ArrowControl : MonoBehaviour
 {
+
     private const float DEFAULT_COLLIDER_RADIUS = 0.07f;
     private const float DEFAULT_OFFSET = 0.25f;
     private const int MAX_ARROW_COUNT = 311;
     private const int BASE_ARROW_COUNT = 1;
+    private const int MAX_ALIGN_ARROW = 40;
     private float xOffset = DEFAULT_OFFSET;
     private float yOffset = DEFAULT_OFFSET;
 
@@ -40,16 +42,20 @@ public class ArrowControl : MonoBehaviour
     private int _activeRing = 0;
 
     private CapsuleCollider _collider;
+    private BoxCollider _boxCollider;
     public int ArrowCount => _arrowCount;
 
     public void OnGameStart()
     {
         _arrows = new List<GameObject>();
         _collider = GetComponent<CapsuleCollider>();
+        _boxCollider = GetComponent<BoxCollider>();
         CreateArrows();//Create arrow buffer
         ShowArrows();
         SetColliderRadius();
         UpdateArrowCountText();
+        _boxCollider.enabled = false;
+        _collider.enabled = true;
         //transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
     }
 
@@ -250,11 +256,11 @@ public class ArrowControl : MonoBehaviour
         {
             var enemy = other.GetComponent<Enemy>();
             int newArrowCount = enemy.TakeDamage(_arrowCount);
-
             if (newArrowCount < 1)
             {
                 if (GameManager.Instance.GameState == GameState.FinishLine)
                 {
+                    GameManager.Instance.SetState(GameState.Win);
                     GameManager.Instance.Win.Invoke();
                 }
                 else
@@ -279,7 +285,6 @@ public class ArrowControl : MonoBehaviour
         {
             GameManager.Instance.SetState(GameState.FinishLine);
             GameManager.Instance.FinishLine.Invoke();
-            //order arrows as block
         }
 
     }
@@ -320,7 +325,31 @@ public class ArrowControl : MonoBehaviour
     public void OnFinishLine()
     {
         _arrowCountText.gameObject.SetActive(false);
-        //align arrows
+        HideAllArrows();
+        AlignArrowsOnXAxis();
+
+        //
+        _collider.enabled = false;
+        _boxCollider.enabled = true;
+        //
+    }
+
+    public void AlignArrowsOnXAxis()
+    {
+        int n = ((_arrowCount < MAX_ALIGN_ARROW) ? _arrowCount : MAX_ALIGN_ARROW);
+        float deltaX = (10f / (float)n);
+
+        _arrows[0].transform.position = new Vector3(0, transform.position.y, transform.position.z);
+        for (int i = 1; i < n; i+=2)
+        {
+
+            _arrows[i].SetActive(true);
+            _arrows[i+1].SetActive(true);
+            _arrows[i].transform.position = new Vector3(0 - (deltaX * i), transform.position.y, transform.position.z);
+            _arrows[i+1].transform.position = new Vector3(0 + (deltaX * i),transform.position.y, transform.position.z);       
+
+
+        }
 
     }
 }
