@@ -26,7 +26,7 @@ public class FollowPath : MonoBehaviour
     }
     void Update()
     {
-        if (GameManager.Instance.GameState == GameState.Play ||GameManager.Instance.GameState == GameState.FinishLine )
+        if (GameManager.Instance.GameState == GameState.Play || GameManager.Instance.GameState == GameState.FinishLine)
         {
             if (_pathCreator != null)
             {
@@ -46,6 +46,12 @@ public class FollowPath : MonoBehaviour
 
     }
 
+    public void OnGameStart()
+    {
+        _distanceTravelled = 0;
+        _pathCreator = GameManager.Instance.CurrentLevel.GetPathCreator();
+    }
+
     public void OnGameRestart()
     {
         _distanceTravelled = 0;
@@ -54,7 +60,7 @@ public class FollowPath : MonoBehaviour
         var rot = _pathCreator.path.GetRotationAtDistance(_distanceTravelled, _endOfPathInstruction);
         transform.eulerAngles = new Vector3(rot.eulerAngles.x, rot.eulerAngles.y, 0);
 
-        _pathCreator = GameManager.Instance.GetLevel().GetPathCreator();
-        _pathCreator.TriggerPathUpdate();
+        _pathCreator = GameManager.Instance.CurrentLevel.GetPathCreator();
+        //_pathCreator.TriggerPathUpdate();
     }
 }
