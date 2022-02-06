@@ -6,47 +6,71 @@ public enum GameState { Play, FinishLine, Win, Lose, Wait }
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField]
-    private Level _level;
+    private Level[] _levels;
+
     [SerializeField]
     private FollowPath _follower;
 
-    private int _cointCount;
-    private int _collectedCoin;
+    public Level CurrentLevel { get; private set; }
 
-    private Level _currentLevel;
-    private GameState _gameState;
-    
-    public GameState GameState => _gameState;
+    public int CurrentLevelIndex { get; private set; }
 
-    public Level GetLevel() => _currentLevel;
+    public GameState GameState { get; private set; }
 
-    public int CoinCount => _cointCount;
-    public int CollectedCoinCount => _collectedCoin;
-
-
-    void Start()
-    {
-        _gameState = GameState.Wait;
-        _currentLevel = Instantiate(_level);
-        _follower.SetPathCreator(_currentLevel.GetPathCreator());
-        //_currentLevel.GetPathCreator().TriggerPathUpdate();
-    }
-
-    public void SetState(GameState state) => _gameState = state;
+    public int CoinCount { get; private set; }
+    public int CollectedCoinCount { get; private set; }
 
     public UnityEvent StartGame, GameOver, Restart, Win, FinishLine;
 
+    void Start()
+    {
+        CurrentLevelIndex = PlayerPrefs.GetInt("Level", 0);
+        CoinCount=PlayerPrefs.GetInt("Coin",0);
+        GameState = GameState.Wait;
+        LoadLevel();
+        UIManager.Instance.UpdateLevelText();
+        UIManager.Instance.UpdateCoinText();
+        _follower.SetPathCreator(CurrentLevel.GetPathCreator());
+
+    }
+
+    public void SetState(GameState state) => GameState = state;
+
+
+
     public void OnGameReStart()
     {
-        Destroy(_currentLevel.gameObject);
-        _currentLevel = Instantiate(_level);
+        LoadLevel();
+        PlayerPrefs.SetInt("Coin", CoinCount);
+        UIManager.Instance.UpdateLevelText();
+        UIManager.Instance.UpdateCoinText();
+        _follower.SetPathCreator(CurrentLevel.GetPathCreator());
     }
 
 
-    public void IncreaseCoin() => _cointCount++;
-    public void IncreaseCollectedCoin() => _collectedCoin++;
+    public void IncreaseCoin() => CoinCount++;
+    public void IncreaseCollectedCoin() => CollectedCoinCount++;
 
-    public void AddCoins() => _cointCount += _collectedCoin;
+    public void AddCoins() => CoinCount += CollectedCoinCount;
+
+    public void LoadNextLevel()
+    {
+        CurrentLevelIndex++;
+        PlayerPrefs.SetInt("Level", CurrentLevelIndex);
+        PlayerPrefs.SetInt("Coin", CoinCount);
+        LoadLevel();
+        UIManager.Instance.UpdateLevelText();
+        UIManager.Instance.UpdateCoinText();
+        _follower.SetPathCreator(CurrentLevel.GetPathCreator());
+    }
 
 
+    void LoadLevel()
+    {
+        if (CurrentLevel != null)
+        {
+            Destroy(CurrentLevel.gameObject);
+        }
+        CurrentLevel = Instantiate(_levels[CurrentLevelIndex % _levels.Length]);
+    }
 }
