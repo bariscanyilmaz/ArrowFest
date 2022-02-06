@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -18,9 +19,27 @@ public class Wall : MonoBehaviour
     [SerializeField]
     private TMP_Text _wallText;
 
+    [SerializeField]
+    private bool _isMove;
+
+    [SerializeField]
+    Transform _toPosition;
+
+    [Range(0.01f, 10f)]
+    [SerializeField]
+    float _moveSpeed = 1f;
+
     void Start()
     {
         _wallText.text = $"{GetOperatorChar(_operator)}{_value}";
+
+        if (_isMove)
+        {
+            //do infinite loop animation
+            transform.parent.DOMove(_toPosition.position, _moveSpeed).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+        }
+
     }
 
     public int Value => _value;
@@ -33,7 +52,7 @@ public class Wall : MonoBehaviour
             Operator.Mul => "x",
             Operator.Sum => "+",
             Operator.Sub => "-",
-            Operator.Div => "/",
+            Operator.Div => "%",
             _ => string.Empty
         };
     }
