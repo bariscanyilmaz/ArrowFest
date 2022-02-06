@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Transform _arrowController;
 
+    [SerializeField]
+    Vector3 _startPosition;
+
     private Vector3 _firstPosition, _lastPosition;
     private float _axisX;
     private bool _isPressing;
@@ -62,12 +65,14 @@ public class PlayerController : MonoBehaviour
     {
 
     }
+
+    public void OnGameStart()
+    {
+        transform.position = _startPosition;
+    }
     public void EndOfPath()
     {
-        
-
-        //arrow block
-        //
-
+        GameManager.Instance.SetState(GameState.Win);
+        GameManager.Instance.Win.Invoke();
     }
 }
