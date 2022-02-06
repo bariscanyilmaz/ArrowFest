@@ -18,8 +18,6 @@ public class ArrowControl : MonoBehaviour
     //
     private int _ringCapacity = 10;
     private int _ring = 1;
-    private float _angle = 0;
-    private float _deltaAngle = 0;
     //
     private int _currentRing = 1;
     private int _currentArrowCount = 0;
@@ -39,27 +37,40 @@ public class ArrowControl : MonoBehaviour
 
     private List<GameObject> _arrows;
     private float _offset = 0.25f;
-    private int _activeRing = 0;
 
     private CapsuleCollider _collider;
     private BoxCollider _boxCollider;
     public int ArrowCount => _arrowCount;
 
-
-
-    public void OnGameStart()
+    void Start()
     {
         _arrows = new List<GameObject>();
         _collider = GetComponent<CapsuleCollider>();
         _boxCollider = GetComponent<BoxCollider>();
+    }
+
+    public void OnGameStart()
+    {
+
+        _arrowCount = PlayerPrefs.GetInt("Arrow", 1);
         CreateArrows();//Create arrow buffer
-        ShowArrows();
+        ResetArrowAlignments();
+        AlignArrowsCircle();
+        ShowAllArrows();
         SetColliderRadius();
         UpdateArrowCountText();
         _boxCollider.enabled = false;
         _collider.enabled = true;
+        _arrowCountText.gameObject.SetActive(true);
     }
 
+    void ResetArrowAlignments()
+    {
+        _ringCapacity = 10;
+        _ring = 1;
+        _currentRing = 1;
+        _currentArrowCount = 1;
+    }
 
     private void SetColliderRadius()
     {
@@ -89,7 +100,7 @@ public class ArrowControl : MonoBehaviour
         return ring;
     }
 
-    public void ShowArrows()
+    public void ShowAllArrows()
     {
         for (int i = 0; i < _arrowCount && i < MAX_ARROW_COUNT; i++)
         {
@@ -128,6 +139,7 @@ public class ArrowControl : MonoBehaviour
     }
     public void CreateArrows()
     {
+        if (_arrows.Count > 0) return;
         for (int i = 0; i <= MAX_ARROW_COUNT; i++)
         {
 
@@ -160,49 +172,6 @@ public class ArrowControl : MonoBehaviour
 
         float x = Mathf.Cos(Mathf.Deg2Rad * angle) * _ring * xOffset;
         float y = Mathf.Sin(Mathf.Deg2Rad * angle) * _ring * xOffset;
-
-        return new Vector3(x, y, 0);
-    }
-
-    private Vector3 GetPosition(int index)
-    {
-        if (index == 0) return Vector3.zero;
-
-        if (index <= 10)
-        {//10
-            _ring = 1;
-            _angle += 36;
-        }
-        else if (index <= 30)
-        {//20
-            _ring = 2;
-            _angle += 18f;
-        }
-        else if (index <= 70)
-        {//40
-            _ring = 3;
-            _angle += 9f;
-        }
-        else if (index <= 130)
-        {//60
-            _ring = 4;
-            _angle += 6f;
-        }
-        else if (index <= 220)
-        {//90
-            _ring = 5;
-            _angle += 4f;
-        }
-        else if (index <= 340)
-        {//120
-            _ring = 6;
-            _angle += 3f;
-        }
-
-        _activeRing = index <= _arrowCount ? _ring : _activeRing;
-
-        float x = Mathf.Cos((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
-        float y = Mathf.Sin((_angle % 360) * Mathf.Deg2Rad) * _ring * _offset;
 
         return new Vector3(x, y, 0);
     }
@@ -259,13 +228,13 @@ public class ArrowControl : MonoBehaviour
             {
                 if (GameManager.Instance.GameState == GameState.FinishLine)
                 {
-                    
+
                     GameManager.Instance.SetState(GameState.Win);
                     GameManager.Instance.Win.Invoke();
                 }
-                else if(GameManager.Instance.GameState==GameState.Play)
+                else if (GameManager.Instance.GameState == GameState.Play)
                 {
-                    
+
                     GameManager.Instance.GameOver.Invoke();
                 }
             }
@@ -284,7 +253,7 @@ public class ArrowControl : MonoBehaviour
                 }
                 else if (GameManager.Instance.GameState == GameState.FinishLine)
                 {
-                    
+
                     GameManager.Instance.IncreaseCollectedCoin();
                 }
 
@@ -326,11 +295,13 @@ public class ArrowControl : MonoBehaviour
 
     public void OnGameReStart()
     {
+        ResetArrowAlignments();
         HideAllArrows();
         _arrows[0].SetActive(true);
         _arrowCount = 1;
         UpdateArrowCountText();
         ResetWallHasCollided();
+        SetColliderRadius();
     }
 
     public void OnFinishLine()
@@ -343,6 +314,11 @@ public class ArrowControl : MonoBehaviour
         _collider.enabled = false;
         _boxCollider.enabled = true;
         //
+    }
+
+    public void OnGameWin()
+    {
+        HideAllArrows();
     }
 
     public void AlignArrowsOnXAxis()
@@ -360,5 +336,14 @@ public class ArrowControl : MonoBehaviour
             _arrows[i + 1].transform.position = new Vector3(0 + (deltaX * i), transform.position.y, transform.position.z);
         }
 
+    }
+
+    public void AlignArrowsCircle()
+    {
+        for (int i = 0; i <= MAX_ARROW_COUNT; i++)
+        {
+            _arrows[i].transform.localPosition = GetArrowPosition(i);
+            _arrows[i].SetActive(false);
+        }
     }
 }
