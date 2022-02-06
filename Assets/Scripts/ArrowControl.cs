@@ -76,7 +76,7 @@ public class ArrowControl : MonoBehaviour
         while (_arrowCount > currentCount && _arrowCount < MAX_ARROW_COUNT)
         {
             count *= 2;
-            currentCount+=count;
+            currentCount += count;
             ring++;
         }
         return ring;
@@ -229,6 +229,7 @@ public class ArrowControl : MonoBehaviour
                 var wall = other.gameObject.GetComponent<Wall>();
                 wall.gameObject.SetActive(false);
                 int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
+
                 if (newArrowCount < 1)
                 {
                     //GameOver
@@ -247,10 +248,14 @@ public class ArrowControl : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
-
-            if (_arrowCount > 3)
+            var enemy = other.GetComponent<Enemy>();
+            int newArrowCount = enemy.TakeDamage(_arrowCount);
+            if (newArrowCount < 1)
             {
-                var enemy = other.GetComponent<Enemy>();
+                GameManager.Instance.GameOver.Invoke();
+            }
+            else
+            {
                 enemy.Die();
                 ChangeArrowCount(_arrowCount - 3);
                 SetColliderRadius();
