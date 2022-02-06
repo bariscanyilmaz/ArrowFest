@@ -6,25 +6,18 @@ using TMPro;
 public class UIManager : Singleton<UIManager>
 {
     [SerializeField]
-    GameObject _startPanel, _gameOverPanel,_winPanel;
+    GameObject _startPanel, _gameOverPanel, _winPanel;
 
     [SerializeField]
-    TextMeshProUGUI _collectedCoinText,_coinText;
+    TextMeshProUGUI _collectedCoinText, _coinText, _levelText;
 
-
-    public void StartButtonOnClick()
+    void Start()
     {
-
+        _startPanel.SetActive(true);
     }
-    public void RestartButtonOnClick()
-    {
-
-        //GameManager.Instance.Restart.Invoke();
-    }
-
     public void OnWin()
     {
-        _collectedCoinText.text=GameManager.Instance.CollectedCoinCount.ToString();
+        _collectedCoinText.text = GameManager.Instance.CollectedCoinCount.ToString();
         _winPanel.SetActive(true);
 
     }
@@ -62,17 +55,38 @@ public class UIManager : Singleton<UIManager>
             {
 
                 //increase coin count
+
                 GameManager.Instance.AddCoins();
                 UpdateCoinText();
-                //load next level
-                //start game;
+                GameManager.Instance.LoadNextLevel();
+                UpdateLevelText();
                 _winPanel.SetActive(false);
-                //
-                //
+                GameManager.Instance.StartGame.Invoke();
+
+                IEnumerator Do()
+                {
+                    float elapsedTime = 0;
+                    float waitForOneSecond = 1f;
+                    while (elapsedTime < waitForOneSecond)
+                    {
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
+
+                    GameManager.Instance.SetState(GameState.Play);
+                }
+                StartCoroutine(Do());
             }
         }
     }
 
-    public void UpdateCoinText()=>_coinText.text=GameManager.Instance.CoinCount.ToString();
+    public void UpdateCoinText() => _coinText.text = GameManager.Instance.CoinCount.ToString();
+
+    public void UpdateLevelText() => _levelText.text = $"Level {GameManager.Instance.CurrentLevelIndex + 1}";
+
+    void StartGame()
+    {
+        GameManager.Instance.SetState(GameState.Play);
+    }
 
 }
