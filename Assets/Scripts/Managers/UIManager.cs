@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UIManager : Singleton<UIManager>
 {
     [SerializeField]
     GameObject _startPanel, _gameOverPanel,_winPanel;
+
+    [SerializeField]
+    TextMeshProUGUI _collectedCoinText,_coinText;
 
 
     public void StartButtonOnClick()
@@ -20,7 +24,9 @@ public class UIManager : Singleton<UIManager>
 
     public void OnWin()
     {
+        _collectedCoinText.text=GameManager.Instance.CollectedCoinCount.ToString();
         _winPanel.SetActive(true);
+
     }
     public void OnGameOver()
     {
@@ -54,12 +60,19 @@ public class UIManager : Singleton<UIManager>
         {
             if (Input.GetMouseButtonDown(0))
             {
+
+                //increase coin count
+                GameManager.Instance.AddCoins();
+                UpdateCoinText();
+                //load next level
+                //start game;
                 _winPanel.SetActive(false);
-                //load new level
-                //GameManager.Instance.Restart.Invoke();
-                //GameManager.Instance.SetState(GameState.Play);
+                //
+                //
             }
         }
     }
+
+    public void UpdateCoinText()=>_coinText.text=GameManager.Instance.CoinCount.ToString();
 
 }

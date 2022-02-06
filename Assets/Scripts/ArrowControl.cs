@@ -45,6 +45,8 @@ public class ArrowControl : MonoBehaviour
     private BoxCollider _boxCollider;
     public int ArrowCount => _arrowCount;
 
+
+
     public void OnGameStart()
     {
         _arrows = new List<GameObject>();
@@ -56,7 +58,6 @@ public class ArrowControl : MonoBehaviour
         UpdateArrowCountText();
         _boxCollider.enabled = false;
         _collider.enabled = true;
-        //transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
     }
 
 
@@ -206,8 +207,6 @@ public class ArrowControl : MonoBehaviour
         return new Vector3(x, y, 0);
     }
 
-
-
     public int Calculate(int val, int arrows, Operator op)
     {
         return op switch
@@ -260,22 +259,33 @@ public class ArrowControl : MonoBehaviour
             {
                 if (GameManager.Instance.GameState == GameState.FinishLine)
                 {
+                    
                     GameManager.Instance.SetState(GameState.Win);
                     GameManager.Instance.Win.Invoke();
                 }
-                else
+                else if(GameManager.Instance.GameState==GameState.Play)
                 {
+                    
                     GameManager.Instance.GameOver.Invoke();
                 }
             }
             else
             {
                 enemy.Die();
-                ChangeArrowCount(_arrowCount - 3);
+                ChangeArrowCount(newArrowCount);
+
                 if (GameManager.Instance.GameState == GameState.Play)
                 {
                     SetColliderRadius();
                     UpdateArrowCountText();
+
+                    GameManager.Instance.IncreaseCoin();
+
+                }
+                else if (GameManager.Instance.GameState == GameState.FinishLine)
+                {
+                    
+                    GameManager.Instance.IncreaseCollectedCoin();
                 }
 
             }
@@ -285,6 +295,7 @@ public class ArrowControl : MonoBehaviour
         {
             GameManager.Instance.SetState(GameState.FinishLine);
             GameManager.Instance.FinishLine.Invoke();
+
         }
 
     }
@@ -340,15 +351,13 @@ public class ArrowControl : MonoBehaviour
         float deltaX = (10f / (float)n);
 
         _arrows[0].transform.position = new Vector3(0, transform.position.y, transform.position.z);
-        for (int i = 1; i < n; i+=2)
+        for (int i = 1; i < n; i += 2)
         {
 
             _arrows[i].SetActive(true);
-            _arrows[i+1].SetActive(true);
+            _arrows[i + 1].SetActive(true);
             _arrows[i].transform.position = new Vector3(0 - (deltaX * i), transform.position.y, transform.position.z);
-            _arrows[i+1].transform.position = new Vector3(0 + (deltaX * i),transform.position.y, transform.position.z);       
-
-
+            _arrows[i + 1].transform.position = new Vector3(0 + (deltaX * i), transform.position.y, transform.position.z);
         }
 
     }
