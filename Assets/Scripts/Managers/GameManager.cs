@@ -29,7 +29,7 @@ public class GameManager : Singleton<GameManager>
 
     public void SetState(GameState state) => _gameState = state;
 
-    public UnityEvent StartGame, GameOver, Restart;
+    public UnityEvent StartGame, GameOver, Restart,Win,FinishLine;
 
     public void OnGameReStart()
     {

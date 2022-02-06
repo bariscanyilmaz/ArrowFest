@@ -237,6 +237,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  Win:
+    m_PersistentCalls:
+      m_Calls: []
+  FinishLine:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &116756100
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,6 +498,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startPanel: {fileID: 954298381}
   _gameOverPanel: {fileID: 183192885}
+  _winPanel: {fileID: 0}
 --- !u!1 &370898463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51986d7827189864e8fd76e5b62019e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _arrowCount: 1
+  _arrowCount: 200
   _arrowPrefab: {fileID: 4448966348673000567, guid: 2bcb8f0e422543949af6f2e7e4fa4e91, type: 3}
   _arrowCountText: {fileID: 1215265957}
   _arrowPoint: {fileID: 654369513}

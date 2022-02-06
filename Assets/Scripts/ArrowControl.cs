@@ -250,18 +250,38 @@ public class ArrowControl : MonoBehaviour
         {
             var enemy = other.GetComponent<Enemy>();
             int newArrowCount = enemy.TakeDamage(_arrowCount);
+
             if (newArrowCount < 1)
             {
-                GameManager.Instance.GameOver.Invoke();
+                if (GameManager.Instance.GameState == GameState.FinishLine)
+                {
+                    GameManager.Instance.Win.Invoke();
+                }
+                else
+                {
+                    GameManager.Instance.GameOver.Invoke();
+                }
             }
             else
             {
                 enemy.Die();
                 ChangeArrowCount(_arrowCount - 3);
-                SetColliderRadius();
-                UpdateArrowCountText();
+                if (GameManager.Instance.GameState == GameState.Play)
+                {
+                    SetColliderRadius();
+                    UpdateArrowCountText();
+                }
+
             }
+
         }
+        else if (other.CompareTag("FinishLine"))
+        {
+            GameManager.Instance.SetState(GameState.FinishLine);
+            GameManager.Instance.FinishLine.Invoke();
+            //order arrows as block
+        }
+
     }
 
     private void ResetWallHasCollided()
@@ -295,7 +315,12 @@ public class ArrowControl : MonoBehaviour
         _arrowCount = 1;
         UpdateArrowCountText();
         ResetWallHasCollided();
-
     }
 
+    public void OnFinishLine()
+    {
+        _arrowCountText.gameObject.SetActive(false);
+        //align arrows
+
+    }
 }

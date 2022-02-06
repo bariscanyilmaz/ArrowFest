@@ -58,6 +58,16 @@ public class PlayerController : MonoBehaviour
     }
 
     Vector3 GetMousePosition() => _cam.ScreenToViewportPoint(Input.mousePosition);
+    public void OnWin()
+    {
 
-    public void EndOfPath() => GameManager.Instance.SetState(GameState.FinishLine);
+    }
+    public void EndOfPath()
+    {
+        
+
+        //arrow block
+        //
+
+    }
 }
