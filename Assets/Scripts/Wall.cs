@@ -23,7 +23,7 @@ public class Wall : MonoBehaviour
     private bool _isMove;
 
     [SerializeField]
-    Transform _toPosition;
+    Vector3 _toPosition;
 
     [Range(0.01f, 10f)]
     [SerializeField]
@@ -38,7 +38,7 @@ public class Wall : MonoBehaviour
         if (_isMove)
         {
             //do infinite loop animation
-            transform.parent.DOMove(_toPosition.position, _moveSpeed).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+            transform.parent.DOMove(_toPosition, _moveSpeed).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
         }
 
     }
@@ -53,7 +53,7 @@ public class Wall : MonoBehaviour
             Operator.Mul => "x",
             Operator.Sum => "+",
             Operator.Sub => "-",
-            Operator.Div => "/",
+            Operator.Div => "\u00F7",
             _ => string.Empty
         };
     }
