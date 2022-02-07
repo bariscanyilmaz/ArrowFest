@@ -12,9 +12,6 @@ public class ArrowControl : MonoBehaviour
     private const int MAX_ALIGN_ARROW = 40;
     private float xOffset = DEFAULT_OFFSET;
     private float yOffset = DEFAULT_OFFSET;
-
-    private float _currentXradius = 0.25f;
-    private float _currentYradius = 0.25f;
     //
     private int _ringCapacity = 10;
     private int _ring = 1;
@@ -172,7 +169,7 @@ public class ArrowControl : MonoBehaviour
         float angle = ((float)_currentArrowCount / (float)_ringCapacity) * 360f;
 
         float x = Mathf.Cos(Mathf.Deg2Rad * angle) * _ring * xOffset;
-        float y = Mathf.Sin(Mathf.Deg2Rad * angle) * _ring * xOffset;
+        float y = Mathf.Sin(Mathf.Deg2Rad * angle) * _ring * yOffset;
 
         return new Vector3(x, y, 0);
     }

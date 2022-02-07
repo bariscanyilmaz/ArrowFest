@@ -6,11 +6,9 @@ public class PlayerController : MonoBehaviour
 {
 
     [SerializeField]
-    private float _speed = 5f;
-    [SerializeField]
     private float _maxWidth;
     [SerializeField]
-    private float _swipeSpeed, _moveSpeed;
+    private float _swipeSpeed;
     [SerializeField]
     Transform _arrowController;
 
