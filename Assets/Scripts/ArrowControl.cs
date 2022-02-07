@@ -199,11 +199,13 @@ public class ArrowControl : MonoBehaviour
         {
             if (!wallHasCollided)
             {
+
                 wallHasCollided = true;
                 var wall = other.gameObject.GetComponent<Wall>();
                 wall.gameObject.SetActive(false);
-                int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
 
+                int newArrowCount = Calculate(wall.Value, _arrowCount, wall.Operator);
+                wall.KillTween();
                 if (newArrowCount < 1)
                 {
                     //GameOver

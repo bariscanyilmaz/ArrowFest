@@ -29,6 +29,8 @@ public class Wall : MonoBehaviour
     [SerializeField]
     float _moveSpeed = 1f;
 
+
+
     void Start()
     {
         _wallText.text = $"{GetOperatorChar(_operator)}{_value}";
@@ -37,7 +39,6 @@ public class Wall : MonoBehaviour
         {
             //do infinite loop animation
             transform.parent.DOMove(_toPosition.position, _moveSpeed).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-
         }
 
     }
@@ -52,9 +53,14 @@ public class Wall : MonoBehaviour
             Operator.Mul => "x",
             Operator.Sum => "+",
             Operator.Sub => "-",
-            Operator.Div => "%",
+            Operator.Div => "/",
             _ => string.Empty
         };
+    }
+
+    public void KillTween()
+    {
+        transform.parent.DOKill(true);
     }
 
 }
