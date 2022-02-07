@@ -211,7 +211,18 @@ public class ArrowControl : MonoBehaviour
                 }
                 else
                 {
+                    
+                    if (newArrowCount < ArrowCount)
+                    {
+                        AudioManager.Instance.PlaySound(AudioManager.Instance.DecreaseWallHitSound);
+                    }
+                    else
+                    {
+                        AudioManager.Instance.PlaySound(AudioManager.Instance.IncreaseWallHitSound);
+                    }
+
                     ChangeArrowCount(newArrowCount);
+                    
                     SetColliderRadius();
                     Invoke("ResetWallHasCollided", 1f);
                     UpdateArrowCountText();
@@ -224,6 +235,9 @@ public class ArrowControl : MonoBehaviour
         {
             var enemy = other.GetComponent<Enemy>();
             int newArrowCount = enemy.TakeDamage(_arrowCount);
+
+
+
             if (newArrowCount < 1)
             {
                 if (GameManager.Instance.GameState == GameState.FinishLine)
@@ -242,6 +256,9 @@ public class ArrowControl : MonoBehaviour
             {
                 enemy.Die();
                 ChangeArrowCount(newArrowCount);
+
+                AudioManager.Instance.PlaySound(AudioManager.Instance.EnemyHitSound);
+
 
                 if (GameManager.Instance.GameState == GameState.Play)
                 {
