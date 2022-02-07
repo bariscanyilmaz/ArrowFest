@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 3546864955642657631}
   - component: {fileID: 3546864955642657628}
   - component: {fileID: 1333134166}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -282,6 +282,9 @@ MonoBehaviour:
   _operator: 1
   _value: 1
   _wallText: {fileID: 1482690484}
+  _isMove: 0
+  _toPosition: {x: 0, y: 0, z: 0}
+  _moveSpeed: 1
 --- !u!1 &3546864956376695448
 GameObject:
   m_ObjectHideFlags: 0

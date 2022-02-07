@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 6874319796505591421}
   - component: {fileID: 6874319796505591420}
   - component: {fileID: 183851490}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -505,3 +505,6 @@ MonoBehaviour:
   _operator: 0
   _value: 4
   _wallText: {fileID: 1429006520}
+  _isMove: 0
+  _toPosition: {x: 0, y: 0, z: 0}
+  _moveSpeed: 1
