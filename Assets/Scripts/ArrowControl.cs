@@ -266,6 +266,7 @@ public class ArrowControl : MonoBehaviour
                     UpdateArrowCountText();
 
                     GameManager.Instance.IncreaseCoin();
+                    UIManager.Instance.UpdateCoinText();
 
                 }
                 else if (GameManager.Instance.GameState == GameState.FinishLine)
