@@ -123,7 +123,8 @@ public class ArrowControl : MonoBehaviour
     {
         if (newArrowCount < MAX_ARROW_COUNT)
         {
-            for (int i = arrowCount > MAX_ARROW_COUNT ? MAX_ARROW_COUNT - 1 : arrowCount; i >= newArrowCount; i--)
+            int n = arrowCount > MAX_ARROW_COUNT ? MAX_ARROW_COUNT - 1 : arrowCount;
+            for (int i = n; i >= newArrowCount; i--)
             {
                 _arrows[i].SetActive(false);
             }
@@ -213,7 +214,7 @@ public class ArrowControl : MonoBehaviour
                 }
                 else
                 {
-                    
+
                     if (newArrowCount < ArrowCount)
                     {
                         AudioManager.Instance.PlaySound(AudioManager.Instance.DecreaseWallHitSound);
@@ -224,7 +225,7 @@ public class ArrowControl : MonoBehaviour
                     }
 
                     ChangeArrowCount(newArrowCount);
-                    
+
                     SetColliderRadius();
                     Invoke("ResetWallHasCollided", 1f);
                     UpdateArrowCountText();
