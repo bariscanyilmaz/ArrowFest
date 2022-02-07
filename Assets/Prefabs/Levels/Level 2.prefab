@@ -10332,6 +10332,18 @@ PrefabInstance:
       propertyPath: _toPosition
       value: 
       objectReference: {fileID: 2880648888883692848}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.x
+      value: 2.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.z
+      value: 99.60001
+      objectReference: {fileID: 0}
     - target: {fileID: 3546864956565907968, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
       propertyPath: m_Name
       value: Decreasing Wall (2)
@@ -10608,6 +10620,14 @@ PrefabInstance:
       propertyPath: _toPosition
       value: 
       objectReference: {fileID: 6343489551168911488}
+    - target: {fileID: 183851490, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
+      propertyPath: _toPosition.x
+      value: 0.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 183851490, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
+      propertyPath: _toPosition.z
+      value: 248.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6874319796452229204, guid: de43dc5f5ab41574087b2802ad7e568e, type: 3}
       propertyPath: m_RootOrder
       value: 7

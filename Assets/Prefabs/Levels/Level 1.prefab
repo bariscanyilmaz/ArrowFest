@@ -9724,6 +9724,18 @@ PrefabInstance:
       propertyPath: _toPosition
       value: 
       objectReference: {fileID: 3116424112878467445}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333134166, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
+      propertyPath: _toPosition.z
+      value: 99.59
+      objectReference: {fileID: 0}
     - target: {fileID: 3546864956565907968, guid: 555d8f9626d38ff409bc37069023f77a, type: 3}
       propertyPath: m_Name
       value: Decreasing Wall (2)
