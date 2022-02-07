@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _firstPosition, _lastPosition;
     private float _axisX;
-    private bool _isPressing;
     private Camera _cam;
 
     void Start()
@@ -34,7 +33,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 _firstPosition = GetMousePosition();
-                _isPressing = true;
+
             }
             else if (Input.GetMouseButton(0))
             {
