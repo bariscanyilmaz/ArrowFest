@@ -25,7 +25,8 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         CurrentLevelIndex = PlayerPrefs.GetInt("Level", 0);
-        CoinCount=PlayerPrefs.GetInt("Coin",0);
+        CoinCount = PlayerPrefs.GetInt("Coin", 0);
+        CollectedCoinCount = 0;
         GameState = GameState.Wait;
         LoadLevel();
         UIManager.Instance.UpdateLevelText();
@@ -41,10 +42,12 @@ public class GameManager : Singleton<GameManager>
     public void OnGameReStart()
     {
         LoadLevel();
+        CollectedCoinCount = 0;
         PlayerPrefs.SetInt("Coin", CoinCount);
         UIManager.Instance.UpdateLevelText();
         UIManager.Instance.UpdateCoinText();
         _follower.SetPathCreator(CurrentLevel.GetPathCreator());
+
     }
 
 
@@ -55,6 +58,7 @@ public class GameManager : Singleton<GameManager>
 
     public void LoadNextLevel()
     {
+        CollectedCoinCount = 0;
         ++CurrentLevelIndex;
         PlayerPrefs.SetInt("Level", CurrentLevelIndex);
         PlayerPrefs.SetInt("Coin", CoinCount);
