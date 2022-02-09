@@ -55,7 +55,7 @@ public class GameManager : Singleton<GameManager>
 
     public void LoadNextLevel()
     {
-        CurrentLevelIndex++;
+        ++CurrentLevelIndex;
         PlayerPrefs.SetInt("Level", CurrentLevelIndex);
         PlayerPrefs.SetInt("Coin", CoinCount);
         LoadLevel();
