@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     {
 
     }
-
+    
     public void OnGameStart()
     {
         transform.position = _startPosition;

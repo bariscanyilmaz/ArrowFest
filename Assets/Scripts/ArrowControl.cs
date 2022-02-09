@@ -327,7 +327,7 @@ public class ArrowControl : MonoBehaviour
         _arrowCountText.gameObject.SetActive(false);
         HideAllArrows();
         AlignArrowsOnXAxis();
-
+        
         //
         _collider.enabled = false;
         _boxCollider.enabled = true;
